@@ -2,39 +2,59 @@ library(classInt)
 library(RColorBrewer)
 library(rworldmap)
 
-# Load and join data (with minor fixes)
+# Load and merge data
 data("countryExData", envir = environment(), package = "rworldmap")
-country_data <- read.csv("D:/Desktop/progetti_v1/20_Serino_colon_bibliometrix/01_Analisi_Bibliometrica/01_extract_miRNA/Country_Production_bibliometrix.csv", 
-                        sep = ';', header = TRUE)
+country_data <- read.csv(
+  "D:/Desktop/progetti_v1/20_Serino_colon_bibliometrix/01_Analisi_Bibliometrica/01_extract_miRNA/Country_Production_bibliometrix.csv", 
+  sep = ";", 
+  header = TRUE
+)
 
-spdf <- joinCountryData2Map(country_data, 
-                           joinCode = "NAME", 
-                           nameJoinColumn = "Country", 
-                           mapResolution = 'coarse', 
-                           verbose = TRUE)
+# Merge data with map
+spdf <- joinCountryData2Map(
+  country_data, 
+  joinCode = "NAME", 
+  nameJoinColumn = "Country", 
+  mapResolution = 'coarse', 
+  verbose = TRUE
+)
 
-# Handle missing values (if any)
-spdf <- spdf[!is.na(spdf$Freq), ]
+# Verify column names (important!)
+print(names(spdf))  # Confirm "Frequency.Percentage" exists
 
-# Create class intervals (4 quantiles)
-classInt <- classIntervals(spdf[["Freq"]], n = 4, style = "quantile")
-catMethod <- classInt$brks  # Extract breaks as a numeric vector
+# Filter out NA values (if any)
+valid_data <- spdf$Frequency.Percentage[!is.na(spdf$Frequency.Percentage)]
 
-# Choose a color palette (4 colors for 4 classes)
-colourPalette <- brewer.pal(4, "YlOrRd")  # Use "YlOrRd" for a clear gradient
+# Create quantile-based classification intervals
+classInt <- classIntervals(valid_data, n = 4, style = "quantile")
 
-# Plot the map
+# Extract breaks for legend
+catMethod <- classInt$brks
+
+# Define color palette
+basePalette <- colorRampPalette(c("#FFEDCC", "#F8C471", "#F1948A", "#E74C3C"))(4)
+colourPalette <- adjustcolor(basePalette, alpha.f = 0.85)
+
+# Plot the map using Frequency.Percentage
 mapParams <- mapCountryData(
-  spdf,
-  nameColumnToPlot = "Freq",
-  addLegend = TRUE,
-  catMethod = catMethod,
+  spdf, 
+  nameColumnToPlot = "Frequency.Percentage", 
+  addLegend = FALSE, 
+  catMethod = catMethod, 
   colourPalette = colourPalette
 )
 
-# Optional: Customize legend (if needed)
-do.call(addMapLegend, c(mapParams, 
-                       legendLabels = "all", 
-                       legendWidth = 0.5, 
-                       legendIntervals = "data", 
-                       legendMar = 8))
+legend("bottomright", 
+       legend = paste0(
+         "[", 
+         round(catMethod[-length(catMethod)], 3),  # Rounded to 3 decimals
+         " - ", 
+         round(catMethod[-1], 3),                  # Rounded to 3 decimals
+         "]%"
+       ),
+       fill = colourPalette,
+       border = "black",
+       title = "Publication Percentage",
+       cex = 0.8,
+       bg = "white")
+
