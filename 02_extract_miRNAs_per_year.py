@@ -129,19 +129,9 @@ small_df["Mir_Words"] = small_df["Mir_Words"].apply(extract_mir_words)
 
 # Validate with the database for immature mirna, this means withaout -5p or -3p at the end of the miRNA ID
 
-#small_df['validated_Mir_IDs'] = small_df['Mir_Words'].apply(
-#    lambda x: miRNA_ID_validation_considering_mature(x, Tolta_microRNA_ID)
-#)
-
-
-
-
-
-# Validate with the database
 small_df['validated_Mir_IDs'] = small_df['Mir_Words'].apply(
-    lambda x: miRNA_ID_validation_immature(x, Tolta_microRNA_ID)
+    lambda x: miRNA_ID_validation_considering_mature(x, Tolta_microRNA_ID)
 )
-
 
 
 
@@ -256,7 +246,7 @@ ax = sns.heatmap(
     annot=heatmap_data.values,  # Usa i valori originali per le annotazioni
     fmt='.2f',  # Formato con due decimali per la media
     linewidths=0.5,
-    cbar_kws={"label": "Mentions (Annual Data)"},
+    cbar_kws={"label": "Articles (Annual Data)"},
     vmin=annual_min,
     vmax=annual_max
 )
@@ -273,7 +263,7 @@ for col_idx in range(len(annual_columns), len(heatmap_data.columns)):
 # 2. Center column labels
 columns_labels = (
     [f"{col}" for col in annual_columns] +
-    ["Total Mentions", "Average Mentions"]
+    ["Total Articles", "Average Articles"]
 )
 ax.set_xticks(np.arange(len(columns_labels)))
 ax.set_xticklabels(columns_labels, rotation=45, ha="center")
@@ -286,7 +276,6 @@ ax.axvline(x=num_annual + 1, color='black', linewidth=2)  # Dopo la "Total"
 # ---------------------------
 # FINAL FORMATTING
 # ---------------------------
-plt.title(f"Top {top_n} miRNA by Total Mentions (Sorted Descending)", fontsize=14)
 plt.xlabel("Years and Metrics", fontsize=12)
 plt.ylabel("miRNA", fontsize=12)
 plt.tight_layout()
