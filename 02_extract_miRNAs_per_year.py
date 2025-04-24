@@ -136,6 +136,16 @@ small_df['validated_Mir_IDs'] = small_df['Mir_Words'].apply(
 
 
 
+
+# Validate with the database
+#small_df['validated_Mir_IDs'] = small_df['Mir_Words'].apply(
+#    lambda x: miRNA_ID_validation_immature(x, Tolta_microRNA_ID)
+#)
+
+
+
+
+
 small_df["Mir_Words_Count"] = small_df["validated_Mir_IDs"].apply(len)
 
 
