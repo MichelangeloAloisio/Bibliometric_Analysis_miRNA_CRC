@@ -18,6 +18,8 @@ Output: 02_processed_data.xlsx.
 
 Publication trends plot (saved as publications_per_year.png).
 
+4) 
+
   
 
 
