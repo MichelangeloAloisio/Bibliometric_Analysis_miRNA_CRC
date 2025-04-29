@@ -11,8 +11,11 @@ B) Publications per Year Analysis Generates a "Publications per Year" plot integ
 
 The top 10 most-studied miRNAs per year (based on frequency in titles/keywords).
 The plot visualizes both metrics simultaneously, enabling analysis of miRNA research trends alongside overall field activity.
+
 Input : 01_Screened_dataset_miRNA_CRC_Review.csv (raw Scopus data screened manually to get out off-topic papers).
+
 Output: 02_processed_data.xlsx.
+
 Publication trends plot (saved as publications_per_year.png).
 
   
