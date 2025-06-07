@@ -19,7 +19,7 @@ def extract_mir_words(text):
             processed_words.add(merged_prefix_mir)
     return processed_words
 
-def miRNA_ID_validation_considering_mature(input_set, Tolta_microRNA_ID):
+def miRNA_ID_validation(input_set, Tolta_microRNA_ID):
     validated_ID = set()
     for miRNA in input_set:
         found = False
@@ -33,6 +33,7 @@ def miRNA_ID_validation_considering_mature(input_set, Tolta_microRNA_ID):
         if found:
             continue
     return validated_ID
+
 
 
 def miRNA_ID_validation_immature(input_set, Tolta_microRNA_ID):
@@ -88,17 +89,16 @@ Toltal_microRNA_ID_deduplication = set()
 
 # Extract from miRNA_DAT (normalize hyphens)
 for x in miRNA_DAT:
-    if 'DE' in x.split(' ')[0] and 'homo' in x.lower():
+    if 'DE' in x.split(' ')[0]:
         id_part = x.strip().split(' ')[5]
         clean_id = id_part.replace('–', '-').replace('—', '-')
         Toltal_microRNA_ID_deduplication.add(clean_id)
 
 # Extract from mature.fa (normalize hyphens)
 for x in miRNA_mature:
-    if 'homo' in x.lower():
-        id_part = x.strip().split(' ')[-1]
-        clean_id = id_part.replace('–', '-').replace('—', '-')
-        Toltal_microRNA_ID_deduplication.add(clean_id)
+    id_part = x.strip().split(' ')[-1]
+    clean_id = id_part.replace('–', '-').replace('—', '-')
+    Toltal_microRNA_ID_deduplication.add(clean_id)
 
 Tolta_microRNA_ID = sorted(list(Toltal_microRNA_ID_deduplication))
 
@@ -107,9 +107,6 @@ Tolta_microRNA_ID = sorted(list(Toltal_microRNA_ID_deduplication))
 df = pd.read_csv("FORMATTED_FOR_BIBLIOMETRIX_DATASET_relevant_miRNA_CRC_Review.csv")
 
 small_df = df[["Author Keywords", "Year", "Title", "Abstract"]].copy()
-
-
-
 
 
 # Convert everything to lowercase and clean empty values
@@ -130,18 +127,8 @@ small_df["Mir_Words"] = small_df["Mir_Words"].apply(extract_mir_words)
 # Validate with the database for immature mirna, this means withaout -5p or -3p at the end of the miRNA ID
 
 small_df['validated_Mir_IDs'] = small_df['Mir_Words'].apply(
-    lambda x: miRNA_ID_validation_considering_mature(x, Tolta_microRNA_ID)
+    lambda x: miRNA_ID_validation(x, Tolta_microRNA_ID)
 )
-
-
-
-
-
-# Validate with the database
-#small_df['validated_Mir_IDs'] = small_df['Mir_Words'].apply(
-#    lambda x: miRNA_ID_validation_immature(x, Tolta_microRNA_ID)
-#)
-
 
 
 
