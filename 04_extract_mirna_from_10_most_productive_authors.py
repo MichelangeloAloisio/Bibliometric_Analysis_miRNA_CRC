@@ -16,7 +16,7 @@ def extract_mir_words(text):
             processed_words.add(merged_prefix_mir)
     return processed_words
 
-def miRNA_ID_validation_considering_mature(input_set, Tolta_microRNA_ID):
+def miRNA_ID_validation(input_set, Tolta_microRNA_ID):
     validated_ID = set()
     for miRNA in input_set:
         found = False
@@ -41,17 +41,16 @@ Toltal_microRNA_ID_deduplication = set()
 
 # Extract from miRNA_DAT (normalize hyphens)
 for x in miRNA_DAT:
-    if 'DE' in x.split(' ')[0] and 'homo' in x.lower():
+    if 'DE' in x.split(' ')[0]:
         id_part = x.strip().split(' ')[5]
         clean_id = id_part.replace('–', '-').replace('—', '-')
         Toltal_microRNA_ID_deduplication.add(clean_id)
 
 # Extract from mature.fa (normalize hyphens)
 for x in miRNA_mature:
-    if 'homo' in x.lower():
-        id_part = x.strip().split(' ')[-1]
-        clean_id = id_part.replace('–', '-').replace('—', '-')
-        Toltal_microRNA_ID_deduplication.add(clean_id)
+    id_part = x.strip().split(' ')[-1]
+    clean_id = id_part.replace('–', '-').replace('—', '-')
+    Toltal_microRNA_ID_deduplication.add(clean_id)
 
 Tolta_microRNA_ID = sorted(list(Toltal_microRNA_ID_deduplication))
 
@@ -75,7 +74,7 @@ df["TI"] = df["TI"].apply(lambda x: re.split(r'[ /]', str(x)))  # Split titles b
 df["Mir_Words"] = df["TI"].apply(extract_mir_words)
 
 df['validated_Mir_IDs'] = df['Mir_Words'].apply(
-    lambda x: miRNA_ID_validation_considering_mature(x, Tolta_microRNA_ID)
+    lambda x: miRNA_ID_validation_(x, Tolta_microRNA_ID)
 )
 
 df['validated_Mir_IDs'] = df['validated_Mir_IDs'].apply(lambda x: ast.literal_eval(x) if isinstance(x, str) else x)
