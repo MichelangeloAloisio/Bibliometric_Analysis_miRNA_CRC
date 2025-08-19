@@ -19,6 +19,9 @@ You can reproduce the initial dataset by running this query on Scopus.
 
 Files in This Repository
 
+- 00_scopus_1385.csv
+  Scopus downloaded database in data (25 September 2024) 
+
 - 01_Screened_dataset_miRNA_CRC_Review.csv  
   Manually reviewed and curated dataset. Includes only articles selected after title and abstract screening. Used as input for all downstream analyses.  
   This file contains publications from Scopus that were manually screened and selected based on title and abstract. It is derived from scholarly metadata used under permitted access. Full-text content is not included. The dataset and all code are open and shared to support transparency and reproducibility.
