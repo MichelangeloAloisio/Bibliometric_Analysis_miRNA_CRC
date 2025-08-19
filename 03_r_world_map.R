@@ -48,7 +48,7 @@ legend("bottomright",
        legend = paste0(
          "[", 
          round(catMethod[-length(catMethod)], 3),  # Rounded to 3 decimals
-         " - ", 
+         " − ", 
          round(catMethod[-1], 3),                  # Rounded to 3 decimals
          "]%"
        ),
@@ -57,4 +57,5 @@ legend("bottomright",
        title = "Publication Percentage",
        cex = 0.8,
        bg = "white")
+
 
